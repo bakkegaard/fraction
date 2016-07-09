@@ -45,6 +45,35 @@ struct Fraction(T){
 		auto f2 =  Fraction(4,10);
 		assert(f1==f2);
 	}
+	Fraction!T opBinary(string op)(Fraction!T rhs){
+		static if(op=="*"){
+			auto resultNumerator= getNumerator()*rhs.getNumerator();
+			auto resultDenominator= getDenominator()*rhs.getDenominator();
+			return Fraction(resultNumerator,resultDenominator);
+		}
+		else static if(op=="/"){
+			auto resultNumerator= getNumerator()*rhs.getDenominator();
+			auto resultDenominator= getDenominator()*rhs.getNumerator();
+			return Fraction(resultNumerator,resultDenominator);
+		}
+	}
+	unittest{
+		auto f1 = Fraction(2,5);
+		auto f2 = Fraction(4,10);
+		assert(f1*f2 == Fraction(2*4,5*10));
+	}
+
+	unittest{
+		auto f1 = Fraction(2,5);
+		auto f2 = Fraction(4,10);
+		assert(f1/f2 == Fraction(2*10,4*5));
+	}
+	unittest{
+		//auto f1 = Fraction(2,5);
+		//auto f2 = Fraction(4,10);
+		//assert(f1+f2 == Fraction(8,10));
+	}
+
 }
 
 void main(){
