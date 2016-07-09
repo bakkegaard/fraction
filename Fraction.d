@@ -4,6 +4,7 @@ struct Fraction(T){
 	T numerator;
 	T denominator;
 	this(T n, T d){
+		if(d==0) throw new Exception("Cannot initialize fraction with denominator being zero");
 		T divisor= gcd(n,d);
 		numerator= n/divisor;
 		denominator= d/divisor;
