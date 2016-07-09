@@ -46,6 +46,26 @@ struct Fraction(T){
 		auto f2 =  Fraction(4,10);
 		assert(f1==f2);
 	}
+
+	int opCmp(Fraction!T rhs) {
+		if(getDenominator()==rhs.getDenominator()){
+			return getNumerator()-rhs.getNumerator();
+		}
+		else{
+			auto cross1= getNumerator()*rhs.getDenominator();
+			auto cross2= getDenominator()*rhs.getNumerator();
+			return cross1-cross2;
+		}
+	}
+
+	unittest{
+		auto f1 = Fraction(1,3);
+		auto f2 = Fraction(2,3);
+		assert((f1<f2)==true);
+
+		auto f3 = Fraction(1,2);
+		assert((f1<f3)==true);
+	}
 	Fraction!T opBinary(string op)(Fraction!T rhs){
 		static if(op=="*"){
 			auto resultNumerator= getNumerator()*rhs.getNumerator();
