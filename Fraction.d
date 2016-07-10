@@ -1,4 +1,12 @@
-import std.conv, std.stdio, std.numeric;
+import std.conv, std.stdio, std.numeric, std.math, std.bigint;
+
+T lcm(T)(T first, T second){
+	first= abs(first);
+	second= abs(second);
+	T currentGcd= gcd(first,second);
+
+	return (first/currentGcd)*second;
+}
 
 struct Fraction(T){
 	T numerator;
@@ -67,6 +75,16 @@ struct Fraction(T){
 		assert((f1<f3)==true);
 	}
 	Fraction!T opBinary(string op)(Fraction!T rhs){
+		Fraction!T magic(string operator)(Fraction!T first, Fraction!T second){
+			auto currentLcm=lcm(first.getDenominator(),second.getDenominator());
+			auto factorThis= currentLcm/first.getDenominator();
+			auto factorRhs= currentLcm/second.getDenominator();
+
+			auto thisExtended= factorThis*first.getNumerator();
+			auto rhsExtended= factorRhs*second.getNumerator();
+
+			mixin("return Fraction(thisExtended"~operator~"rhsExtended,currentLcm);");
+		}
 		static if(op=="*"){
 			auto resultNumerator= getNumerator()*rhs.getNumerator();
 			auto resultDenominator= getDenominator()*rhs.getDenominator();
@@ -76,6 +94,12 @@ struct Fraction(T){
 			auto resultNumerator= getNumerator()*rhs.getDenominator();
 			auto resultDenominator= getDenominator()*rhs.getNumerator();
 			return Fraction(resultNumerator,resultDenominator);
+		}
+		else static if(op=="+"){
+			return magic!"+"(this,rhs);
+		}
+		else static if(op=="-"){
+			return magic!"-"(this,rhs);
 		}
 	}
 	unittest{
